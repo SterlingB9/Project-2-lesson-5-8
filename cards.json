@@ -1,0 +1,42 @@
+[{
+    "card_id": 1,
+    "name": "Avacyn, Angel of Hope",
+    "mana_cost": "5 W W W",
+    "converted_mana": 8
+  },{
+    "card_id": 2,
+    "name": "Gisela, Blade of Goldnight",
+    "mana_cost": "4 R W W",
+    "converted_mana": 7
+  },{
+    "card_id": 3,
+    "name": "Aurelia, the Warleader",
+    "mana_cost": "2 R R W W",
+    "converted_mana": 6
+  },{
+    "card_id": 4,
+    "name": "Bruna, Light of Alabaster",
+    "mana_cost": "3 W W U",
+    "converted_mana": 6
+  },{
+    "card_id": 5,
+    "name": "Sigarda, Font of Blessings",
+    "mana_cost": "2 G W",
+    "converted_mana": 4
+  },{
+    "card_id": 6,
+    "name": "Sigarda, Champion of Light",
+    "mana_cost": "1 G W W",
+    "converted_mana": 4
+  },{
+    "card_id": 7,
+    "name": "Sigarda, Host of Herons",
+    "mana_cost": "2 G W W",
+    "converted_mana": 5
+  },{
+    "card_id": 8,
+    "name": "Sigarda, Heron's Grace",
+    "mana_cost": "3 G W",
+    "converted_mana": 5
+  }
+]
