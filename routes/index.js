@@ -1,5 +1,5 @@
 const routes = require('express').Router();
-const cards = require('./card');
+const card = require('./card');
 const swagger = require('./swagger');
 
 routes.use('/', swagger);
