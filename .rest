@@ -1,0 +1,21 @@
+GET http://localhost:3000 HTTP/1.1
+
+###
+GET https://api-leasson01.onrender.com HTTP/1.1
+
+###
+GET http://localhost:3000/cards HTTP/1.1
+
+###
+GET http://localhost:3000/cards/Bobby HTTP/1.1
+
+###
+POST http://localhost:3000/cards HTTP/1.1
+Content-Type: application/json
+
+{
+    "card_id": "9",
+    "name": "Bobby",
+    "mana_cost": "W W W",
+    "converted_mana": "3"
+}

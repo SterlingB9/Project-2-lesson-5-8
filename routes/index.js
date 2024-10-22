@@ -1,17 +1,13 @@
 const routes = require('express').Router();
-const card = require('./card');
-const swagger = require('./swagger');
+const myController = require('../controllers');
+const path = require('path');
+const port = process.env.PORT || 10000;
 
-routes.use('/', swagger);
-routes.use('/cards', card);
-routes.use(
-  '/',
-  (docData = (req, res) => {
-    let docData = {
-      documentationURL: 'https://nathanbirch.github.io/nathan-byui-api-docs',
-    };
-    res.send(docData);
-  })
-);
+routes.get('/cards', myController.getAllcards);
+routes.get('/cards/:card_id', myController.getCardById);
+
+routes.post('/cards', myController.createCard);
+routes.put('/cards/:id', myController.updateCard);
+routes.delete('/cards/:id', myController.deleteCard);
 
 module.exports = routes;
