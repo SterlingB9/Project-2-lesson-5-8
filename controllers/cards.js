@@ -19,7 +19,7 @@ const getAllCards = (req, res, next) => {
     });
 };
 
-const getCardById = (req, res, next) => {
+const getCardByName = (req, res, next) => {
     const { name } = req.params;
 
     fs.readFile(cardsFilePath, 'utf-8', (err, data) => {
@@ -28,7 +28,7 @@ const getCardById = (req, res, next) => {
         }
         const cards = JSON.parse(data);
 
-        // Loop through the cardss and find the one that matches the name
+        // Loop through the cards and find the one that matches the name
         const card = Object.values(cards[0]).find(c => c.name === name);
 
         if (card) {
@@ -57,7 +57,7 @@ const createCard = (req, res) => {
         const cardsObj = cards[0]; // Assuming cards is an array with one object
 
         // Find the next available card key (e.g., 'card4')
-        const nextcardsKey = `card${Object.keys(cardsObj).length + 1}`;
+        const nextcardKey = `card${Object.keys(cardsObj).length + 1}`;
 
         // Create the new card object
         const newCard = {
@@ -151,4 +151,4 @@ const deleteCard = (req, res) => {
     });
 };
 
-module.exports = { getAllCards, getCardById, createCard, updateCard, deleteCard };
+module.exports = { getAllCards, getCardByName, createCard, updateCard, deleteCard };
