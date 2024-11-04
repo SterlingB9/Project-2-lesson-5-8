@@ -1,154 +1,75 @@
-const fs = require('fs');
-const path = require('path');
+const mongodb = require('../db/connect');
+const ObjectId = require('mongodb').ObjectId;
 
-const cardsFilePath = path.join(__dirname, '../cards.json');
-
-const getAllCards = (req, res, next) => {
-    fs.readFile(cardsFilePath, 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Unable to read cards file' });
-        }
-        // Parse the JSON data from the file
-        const cards = JSON.parse(data);
-
-        // Extract names of all cards
-        const allNames = Object.values(cards[0]).map(card => `${card.name}`);
-
-        // Send the list of names as a JSON response
-        res.json(allNames);
+const getAll = async (req, res) => {
+    const result = await mongodb.getDb().db().collection('cards').find();
+    result.toArray().then((lists) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(lists);
     });
 };
-
-const getCardByName = (req, res, next) => {
-    const { name } = req.params;
-
-    fs.readFile(cardsFilePath, 'utf-8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error reading cards file' });
-        }
-        const cards = JSON.parse(data);
-
-        // Loop through the cards and find the one that matches the name
-        const card = Object.values(cards[0]).find(c => c.name === name);
-
-        if (card) {
-            res.json(card);
-        } else {
-            res.status(404).json({ message: 'Card not found' });
-        }
+  
+const getCard = async (req, res) => {
+    const cardId = new ObjectId(req.params.id);
+    const result = await mongodb.getDb().db().collection('cards').find({ _id: cardId });
+    result.toArray().then((lists) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(lists[0]);
     });
 };
-
-const createCard = (req, res) => {
-    const { card_id, name, mana_cost, converted_mana } = req.body;
-
-    if (!card_id || !name || !mana_cost || !converted_mana ) {
-        return res.status(400).json({ error: 'All fields are required' });
+  
+const createCard = async (req, res) => {
+    const card = {
+        price: req.body.price,
+        name: req.body.name,
+        mana_cost: req.body.mana_cost,
+        converted_mana: req.body.converted_mana
+    };
+    const response = await mongodb.getDb().db().collection('cards').insertOne(card);
+    if (response.acknowledged) {
+        res.status(201).json(response);
+    } else {
+        res.status(500).json(response.error || 'Some error occurred while creating the card.');
     }
-
-    // Read the current cards data from the JSON file
-    fs.readFile(cardsFilePath, 'utf-8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Unable to read cards file' });
-        }
-
-        // Parse the cards JSON data
-        const cards = JSON.parse(data);
-        const cardsObj = cards[0]; // Assuming cards is an array with one object
-
-        // Find the next available card key (e.g., 'card4')
-        const nextcardKey = `card${Object.keys(cardsObj).length + 1}`;
-
-        // Create the new card object
-        const newCard = {
-            card_id,
-            name,
-            mana_cost,
-            converted_mana
-        };
-
-        // Add the new card to the cards list
-        cardsObj[nextcardKey] = newCard;
-
-        // Write the updated cards data back to the JSON file
-        fs.writeFile(cardsFilePath, JSON.stringify(cards, null, 2), 'utf8', (writeErr) => {
-            if (writeErr) {
-                return res.status(500).json({ error: 'Unable to save new card' });
-            }
-
-            // Return the new card's key (ID) in the response
-            return res.status(201).json({ id: nextCardKey });
-        });
-    });
 };
-
-const updateCard = (req, res) => {
-    const { id } = req.params; // Extract card ID from URL (e.g., 'card1')
-    const { card_id, name, mana_cost, converted_mana, birthday } = req.body; // Get updated fields from request body
-
-    // Read the current cards data from the JSON file
-    fs.readFile(cardsFilePath, 'utf-8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ error: 'Unable to read cards file' });
-        }
-
-        // Parse the cards JSON data
-        const cards = JSON.parse(data);
-        const cardsObj = cards[0]; // Assuming cards is an array with one object
-
-        // Check if the card with the given ID exists
-        if (!cardsObj[id]) {
-            return res.status(404).json({ error: `card with ID ${id} not found` });
-        }
-
-        // Update the card fields if they are provided in the request body
-        if (card_id) cardsObj[id].card_id = card_id;
-        if (name) cardsObj[id].name = name;
-        if (mana_cost) cardsObj[id].mana_cost = mana_cost;
-        if (converted_mana) cardsObj[id].converted_mana = converted_mana;
-        if (birthday) cardsObj[id].birthday = birthday;
-
-        // Write the updated cards data back to the JSON file
-        fs.writeFile(cardsFilePath, JSON.stringify(cards, null, 2), 'utf8', (writeErr) => {
-            if (writeErr) {
-                return res.status(500).json({ error: 'Unable to update card' });
-            }
-
-            // Return success response with status 200 (OK)
-            return res.status(200).json({ message: `card ${id} updated successfully` });
-        });
-    });
+  
+const updateCard = async (req, res) => {
+    const cardId = new ObjectId(req.params.id);
+    // be aware of updateOne if you only want to update specific fields
+    const card = {
+        price: req.body.price,
+        name: req.body.name,
+        mana_cost: req.body.mana_cost,
+        converted_mana: req.body.converted_mana
+    };
+    const response = await mongodb
+        .getDb()
+        .db()
+        .collection('cards')
+        .replaceOne({ _id: cardId }, card);
+    console.log(response);
+    if (response.modifiedCount > 0) {
+        res.status(204).send();
+    } else {
+        res.status(500).json(response.error || 'Some error occurred while updating the card.');
+    }
 };
-
-const deleteCard = (req, res) => {
-    const { id } = req.params;
-
-    // Read the current cards from the file
-    fs.readFile(cardsFilePath, 'utf-8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error reading cards file' });
-        }
-
-        const cards = JSON.parse(data);
-
-        // Check if the card with the given ID exists
-        if (!cards[0][id]) {
-            return res.status(404).json({ message: 'card not found' });
-        }
-
-        // Delete the card with the given ID
-        delete cards[0][id];
-
-        // Write the updated cards back to the file
-        fs.writeFile(cardsFilePath, JSON.stringify(cards, null, 2), (err) => {
-            if (err) {
-                return res.status(500).json({ message: 'Error writing to cards file' });
-            }
-
-            // Return a success response
-            res.status(200).json({ message: `card ${id} deleted successfully` });
-        });
-    });
+  
+const deleteCard = async (req, res) => {
+    const cardId = new ObjectId(req.params.id);
+    const response = await mongodb.getDb().db().collection('cards').remove({ _id: cardId }, true);
+    console.log(response);
+    if (response.deletedCount > 0) {
+        res.status(204).send();
+    } else {
+        res.status(500).json(response.error || 'Some error occurred while deleting the card.');
+    }
 };
-
-module.exports = { getAllCards, getCardByName, createCard, updateCard, deleteCard };
+  
+module.exports = {
+    getAll,
+    getCard,
+    createCard,
+    updateCard,
+    deleteCard  
+};

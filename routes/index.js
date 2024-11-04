@@ -3,8 +3,8 @@ const myController = require('../controllers/cards.js');
 const path = require('path');
 const port = process.env.PORT || 10000;
 
-routes.get('/cards', myController.getAllCards);
-routes.get('/cards/:name', myController.getCardByName);
+routes.get('/cards', myController.getAll);
+//routes.get('/cards/:name', myController.getCardByName);
 
 routes.post('/cards', myController.createCard);
 routes.put('/cards/:id', myController.updateCard);

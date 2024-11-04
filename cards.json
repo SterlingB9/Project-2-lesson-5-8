@@ -1,67 +1,67 @@
 [
   {
     "card1": {
-      "card_id": 1,
+      "price": 10,
       "name": "Avacyn, Angel of Hope",
       "mana_cost": "5 W W W",
       "converted_mana": 8
     },
     "card2": {
-      "card_id": 2,
+      "price": 20,
       "name": "Gisela, Blade of Goldnight",
       "mana_cost": "4 R W W",
       "converted_mana": 7
     },
     "card3": {
-      "card_id": 3,
+      "price": 15,
       "name": "Aurelia, the Warleader",
       "mana_cost": "2 R R W W",
       "converted_mana": 6
     },
     "card4": {
-      "card_id": 4,
+      "price": 4,
       "name": "Bruna, Light of Alabaster",
       "mana_cost": "3 W W U",
       "converted_mana": 6
     },
     "card5": {
-      "card_id": 5,
+      "price": 5,
       "name": "Sigarda, Font of Blessings",
       "mana_cost": "2 G W",
       "converted_mana": 4
     },
     "card6": {
-      "card_id": 6,
+      "price": 10,
       "name": "Sigarda, Champion of Light",
       "mana_cost": "1 G W W",
       "converted_mana": 4
     },
     "card7": {
-      "card_id": 7,
+      "price": 7,
       "name": "Sigarda, Host of Herons",
       "mana_cost": "2 G W W",
       "converted_mana": 5
     },
     "card8": {
-      "card_id": 8,
+      "price": 6,
       "name": "Sigarda, Heron's Grace",
       "mana_cost": "3 G W",
       "converted_mana": 5
     },
     "card9": {
-      "card_id": "9",
+      "price": 9,
       "name": "Bobby",
       "mana_cost": "W W W",
       "converted_mana": "3"
     },
     "card10": {
-      "card_id": "10",
+      "price": 10,
       "name": "Tim",
       "mana_cost": "G G 3",
       "converted_mana": "5"
     },
     "card11": {
-      "card_id": "11",
+      "price": 11,
       "name": "Joe",
       "mana_cost": "U U U",
       "converted_mana": "3"

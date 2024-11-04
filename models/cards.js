@@ -3,7 +3,7 @@ module.exports = (mongoose) => {
       'cards',
       mongoose.Schema(
         {
-          card_id: Number,
+          price: Number,
           name: String,
           mana_cost: String,
           converted_mana: Number,
