@@ -1,5 +1,6 @@
 const mongodb = require('../db/connect');
 const ObjectId = require('mongodb').ObjectId;
+const { body, validationResult } = require('express-validator')
 
 const getAll = async (req, res) => {
     const result = await mongodb.getDb().db().collection('cards').find();
@@ -10,12 +11,20 @@ const getAll = async (req, res) => {
 };
   
 const getCard = async (req, res) => {
-    const cardId = new ObjectId(req.params.id);
-    const result = await mongodb.getDb().db().collection('cards').find({ _id: cardId });
-    result.toArray().then((lists) => {
+    try {
+        const name = req.params.name;
+        const result = await mongodb.getDb().db().collection('cards').find({ name: name }).toArray();
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Card not found' });
+        }
+
         res.setHeader('Content-Type', 'application/json');
-        res.status(200).json(lists[0]);
-    });
+        res.status(200).json(result[0]);
+    } catch (error) {
+        console.error('Error fetching card:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
   
 const createCard = async (req, res) => {
@@ -25,11 +34,16 @@ const createCard = async (req, res) => {
         mana_cost: req.body.mana_cost,
         converted_mana: req.body.converted_mana
     };
-    const response = await mongodb.getDb().db().collection('cards').insertOne(card);
-    if (response.acknowledged) {
-        res.status(201).json(response);
-    } else {
-        res.status(500).json(response.error || 'Some error occurred while creating the card.');
+    try {
+        throw new Error
+        const response = await mongodb.getDb().db().collection('cards').insertOne(card);
+        if (response.acknowledged) {
+            res.status(201).json(response);
+        } else {
+            res.status(500).json(response.error || 'Some error occurred while creating the card.');
+        }
+    } catch {
+        res.status(404).json({ message: "Error connecting to database" })
     }
 };
   
@@ -56,8 +70,8 @@ const updateCard = async (req, res) => {
 };
   
 const deleteCard = async (req, res) => {
-    const cardId = new ObjectId(req.params.id);
-    const response = await mongodb.getDb().db().collection('cards').remove({ _id: cardId }, true);
+    const name = req.params.name;
+    const response = await mongodb.getDb().db().collection('cards').deleteOne({ name: name }, true);
     console.log(response);
     if (response.deletedCount > 0) {
         res.status(204).send();
@@ -65,11 +79,32 @@ const deleteCard = async (req, res) => {
         res.status(500).json(response.error || 'Some error occurred while deleting the card.');
     }
 };
+
+const validateManaCost = () => {
+    return [
+        body('mana_cost').isLength({ max: 8 })
+    ]
+}
+
+const validate = (req, res, next) => {
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+      return next()
+    }
+    const extractedErrors = []
+    errors.array().map(err => extractedErrors.push({ [err.param]: err.msg }))
+  
+    return res.status(422).json({
+      errors: 'mana_cost string length must be less than 8'
+    })
+  }
   
 module.exports = {
     getAll,
     getCard,
     createCard,
     updateCard,
-    deleteCard  
+    deleteCard,
+    validateManaCost,
+    validate
 };

@@ -7,21 +7,21 @@ GET https://api-leasson01.onrender.com HTTP/1.1
 GET http://localhost:8080/cards HTTP/1.1
 
 ###
-GET http://localhost:8080/cards/Joe HTTP/1.1
+GET http://localhost:8080/cards/Koma HTTP/1.1
 
 ###
-PUT http://localhost:8080/cards/2
+PUT http://localhost:8080/cards/67284a98b05856a170445159
 Content-Type: application/json
 
 {
-    "price": 11,
-    "name": "Koma",
-    "mana_cost": "3 G G U U",
-    "converted_mana": "7"
+    "price": 15,
+    "name": "Avacyn",
+    "mana_cost": "5 W W W",
+    "converted_mana": "8"
 }
 
 ###
-DELETE http://localhost:8080/cards/8
+DELETE http://localhost:8080/cards/Gisela
 Content-Type: application/json
 
 ###
@@ -29,8 +29,8 @@ POST http://localhost:8080/cards HTTP/1.1
 Content-Type: application/json
 
 {
-    "price": 11,
-    "name": "Joe",
-    "mana_cost": "U U U",
+    "price": 10,
+    "name": "breakServer",
+    "mana_cost": "2 W",
     "converted_mana": "3"
 }
